@@ -1,14 +1,9 @@
 package com.ergophile.yd_notes.data.source.repository
 
-import com.ergophile.yd_notes.data.source.remote.model.user_account.UserAccountModel
-import com.ergophile.yd_notes.data.source.remote.model.user_account.UserAccountModelItem
-import com.ergophile.yd_notes.data.source.remote.model.user_auth.User
 import com.ergophile.yd_notes.data.source.remote.model.user_auth.UserAuth
 import com.ergophile.yd_notes.data.source.remote.model.user_notes.UserNotesModel
-import com.ergophile.yd_notes.data.source.remote.model.user_notes.UserNotesModelItem
 import com.rmaprojects.apirequeststate.ResponseState
 import kotlinx.coroutines.flow.Flow
-import kotlinx.serialization.json.JsonObject
 import okhttp3.RequestBody
 
 interface YDNotesRepository {
@@ -18,11 +13,11 @@ interface YDNotesRepository {
 
     fun getNote(userUid: String): Flow<ResponseState<UserNotesModel>>
 
-    fun addNewNote(newNoteBody: RequestBody): Flow<ResponseState<UserNotesModelItem>>
+    fun addNewNote(newNoteBody: RequestBody): Flow<ResponseState<Boolean>>
 
     fun updateNote(idNote: String,userUid: String, updateBody: RequestBody): Flow<ResponseState<Boolean>>
 
     fun getDetailNote(idNote: String, userUid: String): Flow<ResponseState<UserNotesModel>>
 
-    fun deleteNote(idNote: String): Flow<ResponseState<Boolean>>
+    fun deleteNote(idNote: String): Flow<ResponseState<Unit?>>
 }

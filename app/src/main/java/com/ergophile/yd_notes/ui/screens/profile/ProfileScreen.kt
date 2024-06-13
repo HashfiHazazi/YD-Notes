@@ -20,7 +20,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -30,16 +29,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.chibatching.kotpref.Kotpref
 import com.ergophile.yd_notes.KotprefLocalStorage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    goBack: () -> Unit
+    goBack: () -> Unit,
+    goToSignUp: () -> Unit
 ) {
     val redButtonColor = 0XFFCC0000
     Scaffold(
@@ -112,6 +110,7 @@ fun ProfileScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = Color(redButtonColor)),
                 onClick = {
                     KotprefLocalStorage.clear()
+                    goToSignUp()
                 }) {
                 Text(text = "Logout", fontWeight = FontWeight.Bold)
             }

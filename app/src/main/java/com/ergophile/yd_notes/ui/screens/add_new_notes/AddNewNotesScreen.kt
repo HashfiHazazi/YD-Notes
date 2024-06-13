@@ -124,9 +124,7 @@ fun AddNewNotesScreen(
                 .fillMaxSize()
                 .padding(paddingValues = innerPadding)
         ) {
-            Column(
-                modifier = modifier.padding(paddingValues = innerPadding)
-            ) {
+            Column {
                 if (showSaveNoteDialog == true) {
                     AlertDialog(
                         modifier = modifier.shadow(elevation = 4.dp),
@@ -145,9 +143,7 @@ fun AddNewNotesScreen(
                                 fontWeight = FontWeight.SemiBold
                             )
                         },
-                        onDismissRequest = {
-
-                        },
+                        onDismissRequest = {},
                         confirmButton = {
                             TextButton(
                                 onClick = {
@@ -173,6 +169,7 @@ fun AddNewNotesScreen(
                                             put("modified_at", "now()")
                                         }
                                     )
+                                    goBack()
                                 }
                             ) {
                                 Text("save")
@@ -266,16 +263,11 @@ fun AddNewNotesScreen(
                     }
                 },
                 onSuccess = {
-                    goBack()
-                    Toasty.success(context, "Note Added", Toasty.LENGTH_LONG).show()
+                    showSaveNoteDialog = false
+                    Toasty.success(context, "Note Added", Toasty.LENGTH_SHORT, true).show()
                 },
                 onError = {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.titleLarge.copy(color = Color.Red)
-                        )
-                    }
+                    Toasty.error(context, it, Toasty.LENGTH_SHORT, true).show()
                 }
             )
         }

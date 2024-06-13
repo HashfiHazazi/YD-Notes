@@ -143,9 +143,7 @@ fun DetailNotesScreen(
             },
             onSuccess = { userNotes ->
                 Box(modifier = modifier.fillMaxSize()) {
-                    LazyColumn(
-                        modifier = modifier.fillMaxSize()
-                    ) {
+                    LazyColumn{
                         items(userNotes) {
                             var titleNotesValue by remember {
                                 mutableStateOf(TextFieldValue(it.titleNotes))

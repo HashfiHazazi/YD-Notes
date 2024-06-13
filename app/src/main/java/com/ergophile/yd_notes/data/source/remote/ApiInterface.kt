@@ -1,17 +1,10 @@
 package com.ergophile.yd_notes.data.source.remote
-
-
-import com.ergophile.yd_notes.data.source.remote.model.user_account.UserAccountModelItem
-import com.ergophile.yd_notes.data.source.remote.model.user_auth.User
 import com.ergophile.yd_notes.data.source.remote.model.user_auth.UserAuth
 import com.ergophile.yd_notes.data.source.remote.model.user_notes.UserNotesModel
-import com.ergophile.yd_notes.data.source.remote.model.user_notes.UserNotesModelItem
-import kotlinx.serialization.json.JsonObject
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -43,7 +36,7 @@ interface ApiInterface {
     @POST("/rest/v1/User Notes")
     suspend fun addNewNote(
         @Body body: RequestBody
-    ): UserNotesModelItem
+    )
 
     @PATCH("/rest/v1/User Notes")
     suspend fun updateNote(
@@ -55,5 +48,5 @@ interface ApiInterface {
     @DELETE("/rest/v1/User Notes")
     suspend fun deleteNote(
         @Query("id") id: String
-    ): Boolean
+    ): Unit?
 }

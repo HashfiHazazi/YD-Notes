@@ -1,16 +1,11 @@
 package com.ergophile.yd_notes.data.source.repository
 
 import com.ergophile.yd_notes.data.source.remote.ApiInterface
-import com.ergophile.yd_notes.data.source.remote.model.user_account.UserAccountModelItem
-import com.ergophile.yd_notes.data.source.remote.model.user_auth.User
 import com.ergophile.yd_notes.data.source.remote.model.user_auth.UserAuth
 import com.ergophile.yd_notes.data.source.remote.model.user_notes.UserNotesModel
-import com.ergophile.yd_notes.data.source.remote.model.user_notes.UserNotesModelItem
 import com.rmaprojects.apirequeststate.ResponseState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.serialization.json.JsonObject
 import okhttp3.RequestBody
 
 class YDNotesRepositoryImpl(private val apiInterface: ApiInterface) : YDNotesRepository {
@@ -44,12 +39,12 @@ class YDNotesRepositoryImpl(private val apiInterface: ApiInterface) : YDNotesRep
         }
     }
 
-    override fun addNewNote(newNoteBody: RequestBody): Flow<ResponseState<UserNotesModelItem>> =
+    override fun addNewNote(newNoteBody: RequestBody): Flow<ResponseState<Boolean>> =
         flow {
             emit(ResponseState.Loading)
             try {
                 val noteBody = apiInterface.addNewNote(newNoteBody)
-                emit(ResponseState.Success(noteBody))
+                emit(ResponseState.Success(true))
             } catch (e: Exception) {
                 emit(ResponseState.Error(e.message.toString()))
             }
@@ -79,7 +74,7 @@ class YDNotesRepositoryImpl(private val apiInterface: ApiInterface) : YDNotesRep
         }
     }
 
-    override fun deleteNote(idNote: String): Flow<ResponseState<Boolean>> = flow {
+    override fun deleteNote(idNote: String): Flow<ResponseState<Unit?>> = flow {
         emit(ResponseState.Loading)
         try {
             val noteDelete = apiInterface.deleteNote(id = idNote)

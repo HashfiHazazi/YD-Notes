@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ergophile.yd_notes.KotprefLocalStorage
 import com.ergophile.yd_notes.data.source.remote.model.user_notes.UserNotesModel
-import com.ergophile.yd_notes.data.source.remote.model.user_notes.UserNotesModelItem
 import com.ergophile.yd_notes.data.source.repository.YDNotesRepository
 import com.rmaprojects.apirequeststate.ResponseState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,7 +61,7 @@ class DetailViewModel(private val repository: YDNotesRepository) : ViewModel() {
         }
     }
 
-    private val _deleteNoteState = MutableStateFlow<ResponseState<Boolean>>(ResponseState.Idle)
+    private val _deleteNoteState = MutableStateFlow<ResponseState<Unit?>>(ResponseState.Idle)
 
     val deleteNoteState = _deleteNoteState.asStateFlow()
         .stateIn(

@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
                     val navController: NavHostController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = if (KotprefLocalStorage.accessToken == null) RouteName.SignUp.routeName else RouteName.Home.routeName
+                        startDestination = if (KotprefLocalStorage.accessToken == "" || KotprefLocalStorage.accessToken == null) RouteName.SignUp.routeName else RouteName.Home.routeName
                     ) {
                         composable(route = RouteName.SignUp.routeName) {
                             UserSignupScreen(
@@ -76,10 +76,13 @@ class MainActivity : ComponentActivity() {
                             val id = backStackEntry.arguments?.getInt("id") ?: 0
                             DetailNotesScreen(
                                 idNote = id,
-                                goBack = { navController.popBackStack() })
+                                goBack = { navController.navigateUp() })
                         }
                         composable(route = RouteName.Profile.routeName) {
-                            ProfileScreen(goBack = { navController.popBackStack() })
+                            ProfileScreen(
+                                goBack = { navController.popBackStack() },
+                                goToSignUp = { navController.navigate(RouteName.SignUp.routeName) }
+                            )
                         }
                     }
                 }

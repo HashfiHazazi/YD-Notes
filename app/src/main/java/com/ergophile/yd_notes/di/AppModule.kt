@@ -1,5 +1,6 @@
 package com.ergophile.yd_notes.di
 
+import com.ergophile.yd_notes.KotprefLocalStorage
 import com.ergophile.yd_notes.data.source.remote.ApiInterface
 import com.ergophile.yd_notes.data.source.repository.YDNotesRepository
 import com.ergophile.yd_notes.data.source.repository.YDNotesRepositoryImpl
@@ -39,10 +40,11 @@ class AppModuleImpl : AppModule {
 
 //Add Interceptor
 class OkHttpInterceptor: Interceptor {
+    val bearerToken = if (KotprefLocalStorage.accessToken == "" || KotprefLocalStorage.accessToken == null) "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4enluZnhnc3Nrdmh0cXlqYmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTY5NDU5MzgsImV4cCI6MjAzMjUyMTkzOH0.lTzgX8s5kVAumJbf6YdYI-8UzbEsTGOkFjSBfuyjNSc" else KotprefLocalStorage.accessToken
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
             .header("apikey", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4enluZnhnc3Nrdmh0cXlqYmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTY5NDU5MzgsImV4cCI6MjAzMjUyMTkzOH0.lTzgX8s5kVAumJbf6YdYI-8UzbEsTGOkFjSBfuyjNSc")
-            .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4enluZnhnc3Nrdmh0cXlqYmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTY5NDU5MzgsImV4cCI6MjAzMjUyMTkzOH0.lTzgX8s5kVAumJbf6YdYI-8UzbEsTGOkFjSBfuyjNSc")
+            .header("Authorization", "Bearer $bearerToken")
             .build()
         return chain.proceed(request = request)
     }
