@@ -40,10 +40,10 @@ class AppModuleImpl : AppModule {
 
 //Add Interceptor
 class OkHttpInterceptor: Interceptor {
-    val bearerToken = if (KotprefLocalStorage.accessToken == "" || KotprefLocalStorage.accessToken == null) "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4enluZnhnc3Nrdmh0cXlqYmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTY5NDU5MzgsImV4cCI6MjAzMjUyMTkzOH0.lTzgX8s5kVAumJbf6YdYI-8UzbEsTGOkFjSBfuyjNSc" else KotprefLocalStorage.accessToken
+    val bearerToken = if (KotprefLocalStorage.accessToken == "" || KotprefLocalStorage.accessToken == null) "accesstoken" else KotprefLocalStorage.accessToken
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
-            .header("apikey", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4enluZnhnc3Nrdmh0cXlqYmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTY5NDU5MzgsImV4cCI6MjAzMjUyMTkzOH0.lTzgX8s5kVAumJbf6YdYI-8UzbEsTGOkFjSBfuyjNSc")
+            .header("apikey", "accesstoken")
             .header("Authorization", "Bearer $bearerToken")
             .build()
         return chain.proceed(request = request)
