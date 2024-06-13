@@ -7,6 +7,7 @@ import com.ergophile.yd_notes.data.source.remote.model.user_auth.UserAuth
 import com.ergophile.yd_notes.data.source.remote.model.user_notes.UserNotesModel
 import com.ergophile.yd_notes.data.source.remote.model.user_notes.UserNotesModelItem
 import com.rmaprojects.apirequeststate.ResponseState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.JsonObject
@@ -43,7 +44,7 @@ class YDNotesRepositoryImpl(private val apiInterface: ApiInterface) : YDNotesRep
         }
     }
 
-    override fun addNewNote(newNoteBody: Map<String, Any>): Flow<ResponseState<UserNotesModelItem>> =
+    override fun addNewNote(newNoteBody: RequestBody): Flow<ResponseState<UserNotesModelItem>> =
         flow {
             emit(ResponseState.Loading)
             try {
@@ -56,12 +57,13 @@ class YDNotesRepositoryImpl(private val apiInterface: ApiInterface) : YDNotesRep
 
     override fun updateNote(
         idNote: String,
+        userUid: String,
         updateBody: RequestBody
-    ): Flow<ResponseState<UserNotesModelItem>> = flow {
+    ): Flow<ResponseState<Boolean>> = flow {
         emit(ResponseState.Loading)
         try {
-            val noteUpdate = apiInterface.updateNote(id = idNote, body = updateBody)
-            emit(ResponseState.Success(noteUpdate))
+            val noteUpdate = apiInterface.updateNote(id = idNote, userUid = userUid,body = updateBody)
+            emit(ResponseState.Success(true))
         } catch (e: Exception) {
             emit(ResponseState.Error(e.message.toString()))
         }

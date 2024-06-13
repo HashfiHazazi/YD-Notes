@@ -66,7 +66,11 @@ fun DetailNotesScreen(
     idNote: Int
 ) {
 
-    var showSaveNoteDialog = remember {
+    var showSaveNoteDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var confirmDeleteNoteDialog by remember {
         mutableStateOf(false)
     }
 
@@ -75,6 +79,8 @@ fun DetailNotesScreen(
     val detailState = detailViewModel.detailState.collectAsState()
 
     val updateDetailState = detailViewModel.updateDetailState.collectAsState()
+
+    val deleteNoteState = detailViewModel.deleteNoteState.collectAsState()
 
     LaunchedEffect(key1 = true) {
         detailViewModel.getDetail(idNotes = idNote)
@@ -96,7 +102,7 @@ fun DetailNotesScreen(
                         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                         border = BorderStroke(1.5.dp, color = colorScheme.primary),
                         onClick = {
-                            showSaveNoteDialog.value = showSaveNoteDialog.value != true
+                            showSaveNoteDialog = showSaveNoteDialog != true
                         }
                     ) {
                         Column(
@@ -115,8 +121,7 @@ fun DetailNotesScreen(
                 },
                 actions = {
                     IconButton(onClick = {
-                        Toasty.error(context, "Note Delete Successfully", Toast.LENGTH_SHORT, true)
-                            .show()
+                        confirmDeleteNoteDialog = true
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_delete_24),
@@ -155,7 +160,7 @@ fun DetailNotesScreen(
                             Column(
                                 modifier = modifier.padding(paddingValues = innerPadding)
                             ) {
-                                if (showSaveNoteDialog.value == true) {
+                                if (showSaveNoteDialog == true) {
                                     AlertDialog(
                                         modifier = modifier.shadow(elevation = 4.dp),
                                         shape = RoundedCornerShape(16.dp),
@@ -204,6 +209,7 @@ fun DetailNotesScreen(
                                                                 "notes_content",
                                                                 contentNotesValue.text
                                                             )
+                                                            put("modified_at", "now()")
                                                         }
                                                     )
                                                 }
@@ -214,7 +220,47 @@ fun DetailNotesScreen(
                                         dismissButton = {
                                             TextButton(
                                                 onClick = {
-                                                    showSaveNoteDialog.value = false
+                                                    showSaveNoteDialog = false
+                                                }
+                                            ) {
+                                                Text("cancel")
+                                            }
+
+                                        }
+                                    )
+                                }
+                                if (confirmDeleteNoteDialog == true){
+                                    AlertDialog(
+                                        modifier = modifier.shadow(elevation = 4.dp),
+                                        shape = RoundedCornerShape(16.dp),
+                                        containerColor = Color.White,
+                                        icon = {
+                                            Icon(
+                                                modifier = modifier.size(128.dp),
+                                                painter = painterResource(id = R.drawable.baseline_delete_24),
+                                                contentDescription = "Delete Icon"
+                                            )
+                                        },
+                                        title = {
+                                            Text(
+                                                text = "Delete this note?",
+                                                fontWeight = FontWeight.SemiBold
+                                            )
+                                        },
+                                        onDismissRequest = {},
+                                        confirmButton = {
+                                            TextButton(
+                                                onClick = {
+                                                    detailViewModel.deleteNote(idNote = idNote)
+                                                }
+                                            ) {
+                                                Text("confirm")
+                                            }
+                                        },
+                                        dismissButton = {
+                                            TextButton(
+                                                onClick = {
+                                                    confirmDeleteNoteDialog = false
                                                 }
                                             ) {
                                                 Text("cancel")
@@ -295,21 +341,59 @@ fun DetailNotesScreen(
                     }
                     updateDetailState.value.DisplayResult(
                         onLoading = {
-                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                CircularProgressIndicator(modifier = Modifier.size(64.dp), strokeWidth = 12.dp)
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(64.dp),
+                                    strokeWidth = 12.dp
+                                )
                             }
                         },
                         onSuccess = {
-                            goBack()
                             Toasty.success(
                                 context,
                                 "Note saved successfully",
                                 Toast.LENGTH_LONG,
                                 true
                             ).show()
+                            goBack()
                         },
                         onError = {
-                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = it,
+                                    style = typography.titleLarge.copy(color = Color.Red)
+                                )
+                            }
+                        }
+                    )
+                    deleteNoteState.value.DisplayResult(
+                        onLoading = {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(64.dp),
+                                    strokeWidth = 12.dp
+                                )
+                            }
+                        },
+                        onSuccess = {
+                            Toasty.error(context, "Note delete successfully", Toasty.LENGTH_LONG, true)
+                                .show()
+                            goBack()
+                        },
+                        onError = {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
                                 Text(
                                     text = it,
                                     style = typography.titleLarge.copy(color = Color.Red)
@@ -318,7 +402,6 @@ fun DetailNotesScreen(
                         }
                     )
                 }
-
             },
             onError = {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

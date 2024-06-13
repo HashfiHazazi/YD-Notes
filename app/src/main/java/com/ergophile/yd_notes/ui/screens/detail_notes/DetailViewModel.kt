@@ -40,7 +40,7 @@ class DetailViewModel(private val repository: YDNotesRepository) : ViewModel() {
     }
 
     private val _updateDetailState =
-        MutableStateFlow<ResponseState<UserNotesModelItem>>(ResponseState.Idle)
+        MutableStateFlow<ResponseState<Boolean>>(ResponseState.Idle)
 
     val updateDetailState = _updateDetailState.asStateFlow()
         .stateIn(
@@ -52,10 +52,28 @@ class DetailViewModel(private val repository: YDNotesRepository) : ViewModel() {
     fun updateNoteDetail(idNotes: Int, updateBody: JsonObject) {
         viewModelScope.launch {
             _updateDetailState.emitAll(
-                repository.updateNote(idNote = "eq.$idNotes",
+                repository.updateNote(
+                    idNote = "eq.$idNotes",
+                    userUid = "eq.${KotprefLocalStorage.userUid}",
                     updateBody = updateBody.toString()
                         .toRequestBody("application/json".toMediaTypeOrNull())
                 )
+            )
+        }
+    }
+
+    private val _deleteNoteState = MutableStateFlow<ResponseState<Boolean>>(ResponseState.Idle)
+
+    val deleteNoteState = _deleteNoteState.asStateFlow()
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            ResponseState.Idle
+        )
+    fun deleteNote(idNote: Int){
+        viewModelScope.launch {
+            _deleteNoteState.emitAll(
+                repository.deleteNote(idNote = "eq.$idNote")
             )
         }
     }

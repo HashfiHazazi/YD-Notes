@@ -13,5 +13,7 @@ sealed class RouteName(val routeName: String) {
         }
     }
 
+    object NewNote: RouteName(routeName = "new_note")
+
     object Profile: RouteName(routeName = "profile")
 }

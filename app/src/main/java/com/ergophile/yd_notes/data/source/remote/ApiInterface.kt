@@ -12,6 +12,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Query
 
@@ -41,14 +42,15 @@ interface ApiInterface {
 
     @POST("/rest/v1/User Notes")
     suspend fun addNewNote(
-        @Body body: Map<String, Any>
+        @Body body: RequestBody
     ): UserNotesModelItem
 
-    @POST("/rest/v1/User Notes")
+    @PATCH("/rest/v1/User Notes")
     suspend fun updateNote(
         @Query("id") id: String,
+        @Query("user_uuid_notes") userUid: String,
         @Body body: RequestBody
-    ) : UserNotesModelItem
+    )
 
     @DELETE("/rest/v1/User Notes")
     suspend fun deleteNote(

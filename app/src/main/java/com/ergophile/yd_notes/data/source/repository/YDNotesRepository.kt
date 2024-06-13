@@ -18,9 +18,9 @@ interface YDNotesRepository {
 
     fun getNote(userUid: String): Flow<ResponseState<UserNotesModel>>
 
-    fun addNewNote(newNoteBody: Map<String, Any>): Flow<ResponseState<UserNotesModelItem>>
+    fun addNewNote(newNoteBody: RequestBody): Flow<ResponseState<UserNotesModelItem>>
 
-    fun updateNote(idNote: String, updateBody: RequestBody): Flow<ResponseState<UserNotesModelItem>>
+    fun updateNote(idNote: String,userUid: String, updateBody: RequestBody): Flow<ResponseState<Boolean>>
 
     fun getDetailNote(idNote: String, userUid: String): Flow<ResponseState<UserNotesModel>>
 

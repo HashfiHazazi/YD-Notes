@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName
 data class UserNotesModelItem(
     @SerializedName("created_at")
     val createdAt: String,
+    @SerializedName("modified_at")
+    val modifiedAt: String,
     @SerializedName("id")
     val id: Int,
     @SerializedName("notes_content")

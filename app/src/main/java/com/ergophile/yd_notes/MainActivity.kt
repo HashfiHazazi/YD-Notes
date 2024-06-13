@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.chibatching.kotpref.Kotpref
+import com.ergophile.yd_notes.ui.screens.add_notes.AddNewNotesScreen
 import com.ergophile.yd_notes.ui.screens.detail_notes.DetailNotesScreen
 import com.ergophile.yd_notes.ui.screens.home.HomeScreen
 import com.ergophile.yd_notes.ui.screens.profile.ProfileScreen
@@ -36,7 +37,7 @@ class MainActivity : ComponentActivity() {
                     val navController: NavHostController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = RouteName.SignUp.routeName
+                        startDestination = if (KotprefLocalStorage.accessToken == null) RouteName.SignUp.routeName else RouteName.Home.routeName
                     ) {
                         composable(route = RouteName.SignUp.routeName) {
                             UserSignupScreen(
@@ -52,20 +53,33 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = RouteName.Home.routeName) {
                             HomeScreen(
-                                goToDetail = { navController.navigate(RouteName.Detail.createRoute(id = it)) },
-                                goToProfile = { navController.navigate(RouteName.Profile.routeName) }
+                                goToDetail = {
+                                    navController.navigate(
+                                        RouteName.Detail.createRoute(
+                                            id = it
+                                        )
+                                    )
+                                },
+                                goToProfile = { navController.navigate(RouteName.Profile.routeName) },
+                                goToAddNewNote = { navController.navigate(RouteName.NewNote.routeName) }
                             )
                         }
+                        composable(route = RouteName.NewNote.routeName) {
+                            AddNewNotesScreen(goBack = { navController.popBackStack() })
+                        }
                         composable(route = RouteName.Detail.routeName, arguments = listOf(
-                            navArgument("id"){
+                            navArgument("id") {
                                 type = NavType.IntType
                             }
-                        )) {backStackEntry ->
-                            val id = backStackEntry.arguments?.getInt("id")?: 0
-                            DetailNotesScreen(idNote = id,goBack = {navController.navigateUp()})
+                        )
+                        ) { backStackEntry ->
+                            val id = backStackEntry.arguments?.getInt("id") ?: 0
+                            DetailNotesScreen(
+                                idNote = id,
+                                goBack = { navController.popBackStack() })
                         }
                         composable(route = RouteName.Profile.routeName) {
-                            ProfileScreen(goBack = {navController.navigateUp()})
+                            ProfileScreen(goBack = { navController.popBackStack() })
                         }
                     }
                 }

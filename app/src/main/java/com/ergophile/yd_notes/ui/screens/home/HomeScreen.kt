@@ -55,12 +55,14 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     goToDetail: (id: Int?) -> Unit,
     goToProfile: () -> Unit,
+    goToAddNewNote: () -> Unit,
     viewModel: HomeViewModel = viewModel(factory = viewModelFactoryHelper {
         HomeViewModel(YDNotesApplication.appModule.getRepository)
     })
 ) {
     val dashedBorder =
         Stroke(width = 4f, pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 20f), 0f))
+
     val primaryColor = colorScheme.primary
 
     val homeState = viewModel.homeState.collectAsState()
@@ -83,7 +85,7 @@ fun HomeScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    goToDetail(null)
+                    goToAddNewNote()
                 }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add new note")
             }
@@ -135,7 +137,7 @@ fun HomeScreen(
                             }
                         }
                     }
-                    items(userNotes) {
+                    items(userNotes.reversed()) {
                         Box(
                             modifier = modifier
                                 .fillMaxWidth()
@@ -157,6 +159,12 @@ fun HomeScreen(
                                 Text(
                                     text = it.titleNotes,
                                     style = typography.titleMedium,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Text(
+                                    text = it.subtitleNotes,
+                                    style = typography.bodyMedium,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
